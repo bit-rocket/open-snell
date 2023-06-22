@@ -16,6 +16,7 @@ package snell
 
 import (
 	"bytes"
+	"context"
 	"encoding/binary"
 	"errors"
 	"fmt"
@@ -32,6 +33,7 @@ import (
 	"github.com/icpz/open-snell/components/socks5"
 	"github.com/icpz/open-snell/components/utils"
 	p "github.com/icpz/open-snell/components/utils/pool"
+	snellapi "github.com/icpz/open-snell/snell-api"
 )
 
 const (
@@ -190,6 +192,11 @@ func (s *SnellClient) Close() {
 }
 
 func NewSnellClient(listen, server, obfs, obfsHost, psk string, isV2 bool) (*SnellClient, error) {
+	return NewSnellClientWithAPI(listen, server, obfs, obfsHost, psk, isV2, false, "")
+}
+
+func NewSnellClientWithAPI(listen, server, obfs, obfsHost, psk string,
+	isV2, enableAPI bool, apiAddr string) (*SnellClient, error) {
 	if obfs != "tls" && obfs != "http" && obfs != "" {
 		return nil, fmt.Errorf("invalid snell obfs type %s", obfs)
 	}
@@ -217,14 +224,40 @@ func NewSnellClient(listen, server, obfs, obfsHost, psk string, isV2 bool) (*Sne
 		return nil, err
 	}
 	sc.pool = p
+	meter := snellapi.MemoryTrafficMeter{}
+	ctx, cancle = context.WithCancel(context.Background())
+	if enableAPI {
+		go snellapi.RunClientAPIService(ctx, apiAddr, &meter)
+	}
 
-	sl, err := socks5.NewSocksProxy(listen, sc.handleSnell)
+	sl, err := socks5.NewSocksProxyV2(listen, sc.handleSnell, &meter)
 	if err != nil {
 		return nil, err
 	}
 	sc.socks5 = sl
 
 	return sc, nil
+}
+
+var snellClient *SnellClient
+var ctx context.Context
+var cancle context.CancelFunc
+
+func StartGoSnell(clientAddr, serverAddr, obfsType, obfsHost, psk string, isV2, enableAPI bool, apiAddr string) (err error) {
+
+	snellClient, err = NewSnellClientWithAPI(clientAddr, serverAddr, obfsType, obfsHost, psk, isV2, enableAPI, apiAddr)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func StopGoSnell() {
+	if snellClient != nil {
+		snellClient.Close()
+	}
+	cancle()
 }
 
 func (s *SnellClient) handleSnell(client net.Conn, addr socks5.Addr) {

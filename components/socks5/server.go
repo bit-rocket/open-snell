@@ -20,6 +20,7 @@ import (
 	"net"
 
 	log "github.com/golang/glog"
+	snellapi "github.com/icpz/open-snell/snell-api"
 )
 
 type SocksCallback func(net.Conn, Addr)
@@ -29,6 +30,32 @@ type SockListener struct {
 	address  string
 	closed   bool
 	callback SocksCallback
+}
+
+func NewSocksProxyV2(addr string, cb SocksCallback, meter snellapi.TrafficMeter) (*SockListener, error) {
+
+	l, err := net.Listen("tcp", addr)
+	if err != nil {
+		return nil, err
+	}
+
+	sl := &SockListener{l, addr, false, cb}
+	go func() {
+		log.Infof("SOCKS proxy listening at: %s\n", addr)
+		for {
+			c, err := l.Accept()
+			if err != nil {
+				if sl.closed {
+					break
+				}
+				continue
+			}
+			recordConn := snellapi.NewRecordConn(c, meter)
+			go handleSocks(recordConn, sl.callback)
+		}
+	}()
+
+	return sl, nil
 }
 
 func NewSocksProxy(addr string, cb SocksCallback) (*SockListener, error) {
