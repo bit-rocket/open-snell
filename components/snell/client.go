@@ -244,13 +244,8 @@ var ctx context.Context
 var cancle context.CancelFunc
 
 func StartGoSnell(clientAddr, serverAddr, obfsType, obfsHost, psk string, isV2, enableAPI bool, apiAddr string) (err error) {
-
 	snellClient, err = NewSnellClientWithAPI(clientAddr, serverAddr, obfsType, obfsHost, psk, isV2, enableAPI, apiAddr)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }
 
 func StopGoSnell() {
