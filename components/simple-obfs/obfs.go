@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/icpz/open-snell/components/simple-obfs/http"
-	"github.com/icpz/open-snell/components/simple-obfs/tls"
+	"github.com/bit-rocket/open-snell/components/simple-obfs/http"
+	"github.com/bit-rocket/open-snell/components/simple-obfs/tls"
 )
 
 func NewObfsServer(conn net.Conn, obfs string) (c net.Conn, err error) {

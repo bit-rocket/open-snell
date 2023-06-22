@@ -19,7 +19,7 @@ import (
 	"net"
 	"time"
 
-	p "github.com/icpz/open-snell/components/utils/pool"
+	p "github.com/bit-rocket/open-snell/components/utils/pool"
 )
 
 func Relay(left, right net.Conn) (el, er error) {

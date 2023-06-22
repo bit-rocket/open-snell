@@ -28,12 +28,12 @@ import (
 
 	log "github.com/golang/glog"
 
-	"github.com/icpz/open-snell/components/aead"
-	obfs "github.com/icpz/open-snell/components/simple-obfs"
-	"github.com/icpz/open-snell/components/socks5"
-	"github.com/icpz/open-snell/components/utils"
-	p "github.com/icpz/open-snell/components/utils/pool"
-	snellapi "github.com/icpz/open-snell/snell-api"
+	"github.com/bit-rocket/open-snell/components/aead"
+	obfs "github.com/bit-rocket/open-snell/components/simple-obfs"
+	"github.com/bit-rocket/open-snell/components/socks5"
+	"github.com/bit-rocket/open-snell/components/utils"
+	p "github.com/bit-rocket/open-snell/components/utils/pool"
+	snellapi "github.com/bit-rocket/open-snell/snell-api"
 )
 
 const (

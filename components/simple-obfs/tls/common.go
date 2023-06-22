@@ -22,7 +22,7 @@ import (
 	"sync"
 	"time"
 
-	p "github.com/icpz/open-snell/components/utils/pool"
+	p "github.com/bit-rocket/open-snell/components/utils/pool"
 )
 
 func init() {

@@ -23,8 +23,8 @@ import (
 	log "github.com/golang/glog"
 	"gopkg.in/ini.v1"
 
-	"github.com/icpz/open-snell/components/snell"
-	"github.com/icpz/open-snell/constants"
+	"github.com/bit-rocket/open-snell/components/snell"
+	"github.com/bit-rocket/open-snell/constants"
 )
 
 var (

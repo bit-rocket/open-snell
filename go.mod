@@ -1,6 +1,6 @@
-module github.com/icpz/open-snell
+module github.com/bit-rocket/open-snell
 
-go 1.17
+go 1.19
 
 require (
 	github.com/golang/glog v1.1.0

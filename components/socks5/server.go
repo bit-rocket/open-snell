@@ -19,8 +19,8 @@ import (
 	"io/ioutil"
 	"net"
 
+	snellapi "github.com/bit-rocket/open-snell/snell-api"
 	log "github.com/golang/glog"
-	snellapi "github.com/icpz/open-snell/snell-api"
 )
 
 type SocksCallback func(net.Conn, Addr)
