@@ -50,7 +50,10 @@ func NewSocksProxyV2(addr string, cb SocksCallback, meter snellapi.TrafficMeter)
 				}
 				continue
 			}
-			recordConn := snellapi.NewRecordConn(c, meter)
+			recordConn := c
+			if meter != nil {
+				recordConn = snellapi.NewRecordConn(c, meter)
+			}
 			go handleSocks(recordConn, sl.callback)
 		}
 	}()
@@ -59,27 +62,7 @@ func NewSocksProxyV2(addr string, cb SocksCallback, meter snellapi.TrafficMeter)
 }
 
 func NewSocksProxy(addr string, cb SocksCallback) (*SockListener, error) {
-	l, err := net.Listen("tcp", addr)
-	if err != nil {
-		return nil, err
-	}
-
-	sl := &SockListener{l, addr, false, cb}
-	go func() {
-		log.Infof("SOCKS proxy listening at: %s\n", addr)
-		for {
-			c, err := l.Accept()
-			if err != nil {
-				if sl.closed {
-					break
-				}
-				continue
-			}
-			go handleSocks(c, sl.callback)
-		}
-	}()
-
-	return sl, nil
+	return NewSocksProxyV2(addr, cb, nil)
 }
 
 func (l *SockListener) Close() {
