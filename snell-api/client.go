@@ -46,13 +46,13 @@ func NewRecordConn(conn net.Conn, meter TrafficMeter) *RecordConn {
 
 func (c *RecordConn) Read(b []byte) (int, error) {
 	n, err := c.Conn.Read(b)
-	c.meter.Count(0, uint64(n))
+	c.meter.Count(uint64(n), 0)
 	return n, err
 }
 
 func (c *RecordConn) Write(b []byte) (int, error) {
 	n, err := c.Conn.Write(b)
-	c.meter.Count(uint64(n), 0)
+	c.meter.Count(0, uint64(n))
 	return n, err
 }
 

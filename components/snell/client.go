@@ -252,6 +252,11 @@ func StopGoSnell() {
 	if snellClient != nil {
 		snellClient.Close()
 	}
+	go func() {
+		log.Info("call cancel to stop snell API grpc client")
+		<-ctx.Done()
+		log.Info("snell API grpc client stopped")
+	}()
 	cancle()
 }
 
