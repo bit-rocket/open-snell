@@ -2,6 +2,7 @@ package snellapi
 
 import (
 	"context"
+	"io"
 	"net"
 	"sync/atomic"
 	"time"
@@ -13,7 +14,7 @@ import (
 type TrafficMeter interface {
 	Count(sent uint64, recv uint64)
 	Query() (sent uint64, recv uint64)
-	// io.Closer
+	io.Closer
 }
 
 type MemoryTrafficMeter struct {
